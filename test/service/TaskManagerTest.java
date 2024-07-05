@@ -1,8 +1,8 @@
 package service;
 
-import model.EpicTask;
+import model.Epic;
 import model.Status;
-import model.SubTask;
+import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.*;
 
@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskManagerTest {
     TaskManager manager;
     ArrayList<Task> tasksList;
-    ArrayList<SubTask> subTasksList;
-    ArrayList<EpicTask> epicsTasksList;
+    ArrayList<Subtask> subTasksList;
+    ArrayList<Epic> epicsTasksList;
 
 
     @BeforeAll
@@ -29,18 +29,18 @@ class TaskManagerTest {
         ));
         epicsTasksList = new ArrayList<>(Arrays.asList(
                 //epic 1
-                new EpicTask("Make home work", "Make home work for today"),
+                new Epic("Make home work", "Make home work for today"),
                 //epic 2
-                new EpicTask("Meet friends", "Meet all my friends")
+                new Epic("Meet friends", "Meet all my friends")
         ));
 
         subTasksList = new ArrayList<>(Arrays.asList(
                 //for epic 1
-                new SubTask("Make algebra", "make task 1"),
-                new SubTask("Make math", "make equations"),
+                new Subtask("Make algebra", "make task 1"),
+                new Subtask("Make math", "make equations"),
                 //for epic 2
-                new SubTask("Meet Jack", "Meet Jack at 11"),
-                new SubTask("Meet Sam", "Meet Sam at 12")
+                new Subtask("Meet Jack", "Meet Jack at 11"),
+                new Subtask("Meet Sam", "Meet Sam at 12")
         ));
 
     }
@@ -68,8 +68,8 @@ class TaskManagerTest {
     void getSubTasks() {
         assertTrue(manager.getSubTasks().isEmpty());
         int epicId = manager.createEpicTask(epicsTasksList.getFirst());
-        SubTask subtask1 = subTasksList.getFirst();
-        SubTask subtask2 = subTasksList.get(1);
+        Subtask subtask1 = subTasksList.getFirst();
+        Subtask subtask2 = subTasksList.get(1);
 
         subtask1.setEpicId(epicId);
         subtask2.setEpicId(epicId);
@@ -104,8 +104,8 @@ class TaskManagerTest {
     void deleteSubTasks() {
         assertTrue(manager.getSubTasks().isEmpty());
         int epicId = manager.createEpicTask(epicsTasksList.getFirst());
-        SubTask subtask1 = subTasksList.getFirst();
-        SubTask subtask2 = subTasksList.get(1);
+        Subtask subtask1 = subTasksList.getFirst();
+        Subtask subtask2 = subTasksList.get(1);
 
         subtask1.setEpicId(epicId);
         subtask2.setEpicId(epicId);
@@ -142,8 +142,8 @@ class TaskManagerTest {
     @Test
     void getSubTaskByID() {
         int epicId = manager.createEpicTask(epicsTasksList.getFirst());
-        SubTask subtask1 = subTasksList.getFirst();
-        SubTask subtask2 = subTasksList.get(1);
+        Subtask subtask1 = subTasksList.getFirst();
+        Subtask subtask2 = subTasksList.get(1);
 
         subtask1.setEpicId(epicId);
         subtask2.setEpicId(epicId);
@@ -179,8 +179,8 @@ class TaskManagerTest {
     @Test
     void createSubTask() {
         int epicId = manager.createEpicTask(epicsTasksList.getFirst());
-        SubTask subtask1 = subTasksList.getFirst();
-        SubTask subtask2 = subTasksList.get(1);
+        Subtask subtask1 = subTasksList.getFirst();
+        Subtask subtask2 = subTasksList.get(1);
 
         subtask1.setEpicId(epicId);
         subtask2.setEpicId(epicId);
@@ -218,12 +218,12 @@ class TaskManagerTest {
     @Test
     void updateSubTask() {
         int epicId = manager.createEpicTask(epicsTasksList.getFirst());
-        SubTask subtask = subTasksList.getFirst();
+        Subtask subtask = subTasksList.getFirst();
         subtask.setEpicId(epicId);
         int taskOneId = manager.createSubTask(subtask);
         assertEquals(subTasksList.getFirst(), manager.getSubTaskByID(taskOneId));
 
-        SubTask updatedSubTask = subTasksList.get(1);
+        Subtask updatedSubTask = subTasksList.get(1);
         updatedSubTask.setEpicId(epicId);
         updatedSubTask.setId(taskOneId);
         updatedSubTask.setStatus(Status.IN_PROGRESS);
@@ -237,7 +237,7 @@ class TaskManagerTest {
         int taskOneId = manager.createEpicTask(epicsTasksList.getFirst());
         assertEquals(epicsTasksList.getFirst(), manager.getEpicByID(taskOneId));
 
-        EpicTask updatedTask = epicsTasksList.get(1);
+        Epic updatedTask = epicsTasksList.get(1);
         updatedTask.setId(taskOneId);
         updatedTask.setStatus(Status.IN_PROGRESS);
 
@@ -257,7 +257,7 @@ class TaskManagerTest {
     @Test
     void deleteSubTasksByID() {
         int epicId = manager.createEpicTask(epicsTasksList.getFirst());
-        SubTask subtask = subTasksList.getFirst();
+        Subtask subtask = subTasksList.getFirst();
         subtask.setEpicId(epicId);
         int taskId = manager.createSubTask(subtask);
 
@@ -279,8 +279,8 @@ class TaskManagerTest {
     @Test
     void getEpicSubTasks() {
         int epicId = manager.createEpicTask(epicsTasksList.getFirst());
-        SubTask subtask1 = subTasksList.getFirst();
-        SubTask subtask2 = subTasksList.get(1);
+        Subtask subtask1 = subTasksList.getFirst();
+        Subtask subtask2 = subTasksList.get(1);
 
         subtask1.setEpicId(epicId);
         subtask2.setEpicId(epicId);
@@ -288,7 +288,7 @@ class TaskManagerTest {
         manager.createSubTask(subtask1);
         manager.createSubTask(subtask2);
 
-        ArrayList<SubTask> testList = new ArrayList<>();
+        ArrayList<Subtask> testList = new ArrayList<>();
         testList.add(subTasksList.getFirst());
         testList.add(subTasksList.get(1));
 
@@ -301,8 +301,8 @@ class TaskManagerTest {
     @DisplayName("Test epic status changes depending on subtasks.")
     void getEpicStatusTest() {
         int epicId = manager.createEpicTask(epicsTasksList.getFirst());
-        SubTask subtask1 = subTasksList.getFirst();
-        SubTask subtask2 = subTasksList.get(1);
+        Subtask subtask1 = subTasksList.getFirst();
+        Subtask subtask2 = subTasksList.get(1);
 
         subtask1.setEpicId(epicId);
         subtask2.setEpicId(epicId);

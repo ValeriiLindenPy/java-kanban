@@ -1,17 +1,15 @@
 package service;
 
-import model.EpicTask;
-import model.SubTask;
+import model.Epic;
+import model.Subtask;
 import model.Task;
-
 import java.util.ArrayList;
-
 
 public interface ITaskmanager {
     //Получение списка всех задач.
     ArrayList<Task> getTasks();
-    ArrayList<SubTask> getSubTasks();
-    ArrayList<EpicTask> getEpics();
+    ArrayList<Subtask> getSubTasks();
+    ArrayList<Epic> getEpics();
 
     //Удаление всех задач.
     void deleteTasks();
@@ -20,18 +18,18 @@ public interface ITaskmanager {
 
     //Получение по идентификатору.
     Task getTaskByID(int id);
-    SubTask getSubTaskByID(int id);
-    EpicTask getEpicByID(int id);
+    Subtask getSubTaskByID(int id);
+    Epic getEpicByID(int id);
 
     //Создание.
     int createTask(Task task);
-    int createSubTask(SubTask task);
-    int createEpicTask(EpicTask task);
+    int createSubTask(Subtask task);
+    int createEpicTask(Epic task);
 
     //Обновление
     void updateTask(Task task);
-    void updateSubTask(SubTask task);
-    void updateEpicTask(EpicTask task);
+    void updateSubTask(Subtask task);
+    void updateEpicTask(Epic task);
 
     //Удаление задач по ID.
     void deleteTaskByID(int id);
@@ -39,8 +37,5 @@ public interface ITaskmanager {
     void deleteEpicByID(int id);
 
     //Получение списка всех подзадач определённого эпика
-    ArrayList<SubTask> getEpicSubTasks(int epicID);
-
-
-
+    ArrayList<Subtask> getEpicSubTasks(int epicID);
 }

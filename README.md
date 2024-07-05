@@ -4,6 +4,6 @@
 
 * model (Task, EpicTask, SubTask, Status (enum))
 * service (TaskManager and ITaskManager)
-* All tests are located in Test directory
+* All tests are located in test directory
 
 

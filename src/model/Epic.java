@@ -4,31 +4,26 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EpicTask extends Task {
+public class Epic extends Task {
 
     protected Set<Integer> subtasksIds;
 
-    public EpicTask(int id, String name, String description, Status status) {
+    public Epic(int id, String name, String description, Status status) {
         super(id, name, description, status);
         this.subtasksIds = new HashSet<>();
     }
 
-    public EpicTask(String name, String description) {
+    public Epic(String name, String description) {
         super(name, description);
         this.subtasksIds = new HashSet<>();
     }
 
-
-    public ArrayList<Integer> getAllSubtasks() {
-        System.out.println("All subtask in Epic ID " + this.getId());
-        return new ArrayList<>(subtasksIds);
-    }
+    public ArrayList<Integer> getAllSubtasks() {return new ArrayList<>(subtasksIds);}
 
     public String addSubTask(int subTaskId) {
         this.subtasksIds.add(subTaskId);
         return "Subtask added in Epic ID " + this.getId();
     }
-
 
     public String removeSubTaskbyId(int id) {
         if (this.subtasksIds.contains(id)) {
@@ -43,7 +38,6 @@ public class EpicTask extends Task {
     public void removeAllSubTasks() {
         subtasksIds.clear();
     }
-
 
     @Override
     public String toString() {

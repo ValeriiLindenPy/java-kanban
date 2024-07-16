@@ -11,11 +11,13 @@ public class Subtask extends Task {
         super(name, description);
     }
 
-    public int getEpicId() {
-        return epicId;
+    public int getEpicId() {return epicId;
     }
 
     public void setEpicId(int epicId) {
+        if (epicId == this.getId()) {
+            throw new IllegalArgumentException("Subtask should not be able to add itself as a Epic.");
+        }
         this.epicId = epicId;
     }
 }

@@ -13,50 +13,34 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InMemoryTaskManagerTest {
-    InMemoryTaskManager manager;
+    TaskManager manager;
     ArrayList<Task> tasksList;
     ArrayList<Subtask> subTasksList;
     ArrayList<Epic> epicsTasksList;
 
 
-    @BeforeAll
-    void setup() {
-        manager = new InMemoryTaskManager();
+    @BeforeEach
+    void setInitState() {
+        manager = Managers.getDefault();
+
+        /*
+         Чтобы меньше менять структуру тестов я решил создать хотя бы по 2 задачи
+         Тем самым больше делегировав задачи на setInitState()ю
+         */
+
         tasksList = new ArrayList<>(Arrays.asList(
                 new Task("Task 1", "Description for task 1"),
-                new Task("Task 2", "Description for task 2"),
-                new Task("Task 3", "Description for task 3"),
-                new Task("Task 4", "Description for task 4"),
-                new Task("Task 5", "Description for task 5"),
-                new Task("Task 6", "Description for task 6"),
-                new Task("Task 7", "Description for task 7"),
-                new Task("Task 8", "Description for task 8"),
-                new Task("Task 9", "Description for task 9"),
-                new Task("Task 10", "Description for task 10")
+                new Task("Task 2", "Description for task 2")
         ));
         epicsTasksList = new ArrayList<>(Arrays.asList(
-                //epic 1
                 new Epic("Epic 1", "Description for epic 1"),
-                //epic 2
                 new Epic("Epic 2", "Description for epic 2")
         ));
 
         subTasksList = new ArrayList<>(Arrays.asList(
-                //for epic 1
                 new Subtask("Subtask 1", "Description for subtask 1"),
-                new Subtask("Subtask 2", "Description for subtask 2"),
-                new Subtask("Subtask 3", "Description for subtask 3"),
-                new Subtask("Subtask 4", "Description for subtask 4")
+                new Subtask("Subtask 2", "Description for subtask 2")
         ));
-    }
-
-    @BeforeEach
-    void setInitState() {
-        manager.resetHistory();
-        manager.deleteTasks();
-        manager.deleteSubTasks();
-        manager.deleteEpics();
-        manager.resetTaskCounter();
     }
 
     /**
@@ -65,8 +49,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldBeEqualWhenTwoTasksHaveOneId() {
-        Task taskOne = new Task(1, "Task 1" , "task 1", Status.NEW);
-        Task taskTwo = new Task(1, "Task 2" , "task 2", Status.NEW);
+        Task taskOne = new Task(1, "Task 1", "task 1", Status.NEW);
+        Task taskTwo = new Task(1, "Task 2", "task 2", Status.NEW);
 
         assertEquals(taskOne, taskTwo);
     }
@@ -77,11 +61,11 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldBeEqualWhenTaskSubclassesHaveOneId() {
-        Epic epicOne = new Epic(1, "Epic 1" , "Epic 1", Status.NEW);
-        Epic epicTwo = new Epic(1, "Epic 2" , "Epic 2", Status.NEW);
+        Epic epicOne = new Epic(1, "Epic 1", "Epic 1", Status.NEW);
+        Epic epicTwo = new Epic(1, "Epic 2", "Epic 2", Status.NEW);
 
-        Subtask subtaskOne = new Subtask(1, "Subtask 1" , "subtask 1", Status.NEW);
-        Subtask subtaskTwo = new Subtask(1, "Subtask 2" , "subtask 2", Status.NEW);
+        Subtask subtaskOne = new Subtask(1, "Subtask 1", "subtask 1", Status.NEW);
+        Subtask subtaskTwo = new Subtask(1, "Subtask 2", "subtask 2", Status.NEW);
 
         assertEquals(epicOne, epicTwo);
         assertEquals(subtaskOne, subtaskTwo);
@@ -153,9 +137,6 @@ class InMemoryTaskManagerTest {
     }
 
 
-
-
-
     @Test
     void getTasks() {
         assertTrue(manager.getTasks().isEmpty());
@@ -181,7 +162,7 @@ class InMemoryTaskManagerTest {
         manager.createSubTask(subtask1);
         manager.createSubTask(subtask2);
 
-        assertEquals(subTasksList.size()-2, manager.getSubTasks().size());
+        assertEquals(subTasksList.size(), manager.getSubTasks().size());
         assertFalse(manager.getSubTasks().isEmpty());
     }
 

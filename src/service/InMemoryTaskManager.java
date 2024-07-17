@@ -198,12 +198,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return this.historyManager.getHistory();
+        return historyManager.getHistory();
     }
 
-    void resetHistory() {
-        this.historyManager.clearHistory();
-    }
+
 
 
     //Проверка статуса Epic

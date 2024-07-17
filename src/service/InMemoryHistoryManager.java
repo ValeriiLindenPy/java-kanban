@@ -17,19 +17,14 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void add(Task task) {
         if (this.taskHistory.size() >= MAX_TASKS_IN_HISTORY) {
             this.taskHistory.removeFirst();
-            this.taskHistory.add(new Task(task.getId(), task.getName(), task.getDescription(),task.getStatus()));
-        } else {
-            this.taskHistory.add(new Task(task.getId(), task.getName(), task.getDescription(),task.getStatus()));
         }
+        this.taskHistory.add(new Task(task.getId(), task.getName(), task.getDescription(),task.getStatus()));
     }
 
     @Override
     public List<Task> getHistory() {
-        return this.taskHistory;
+        return taskHistory;
     }
 
-    @Override
-    public void clearHistory() {
-        this.taskHistory.clear();
-    }
+
 }

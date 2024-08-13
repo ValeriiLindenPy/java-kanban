@@ -18,7 +18,9 @@ public class Epic extends Task {
         this.subtasksIds = new HashSet<>();
     }
 
-    public ArrayList<Integer> getAllSubtasks() {return new ArrayList<>(subtasksIds);}
+    public ArrayList<Integer> getAllSubtasks() {
+        return new ArrayList<>(subtasksIds);
+    }
 
     public String addSubTask(int subTaskId) {
 

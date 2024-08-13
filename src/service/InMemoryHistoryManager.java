@@ -27,7 +27,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node first;
     private Node last;
 
-
     private ArrayList<Task> getTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
         Node node = first;
@@ -73,10 +72,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
 
-
-
-
-
     @Override
     public void add(Task task) {
 
@@ -104,6 +99,4 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(node);
         }
     }
-
-
 }

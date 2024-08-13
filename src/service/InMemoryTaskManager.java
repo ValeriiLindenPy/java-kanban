@@ -203,9 +203,6 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-
-
-
     //Проверка статуса Epic
     private void checkEpicStatus(Epic epic) {
         Set<String> epicSubTasks = new HashSet<>();
@@ -228,7 +225,4 @@ public class InMemoryTaskManager implements TaskManager {
     public void resetTaskCounter() {
         this.taskCounter = 1;
     }
-
-
-
 }

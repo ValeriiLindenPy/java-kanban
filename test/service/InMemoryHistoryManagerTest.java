@@ -22,7 +22,6 @@ class InMemoryHistoryManagerTest {
     private Task task2;
     private Task task3;
 
-
     @BeforeEach
     void setInitState() {
         historyManager = Managers.getDefaultHistory();
@@ -42,20 +41,16 @@ class InMemoryHistoryManagerTest {
     /**
      * задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
      */
-
     @Test
     void testPreviousVersionsRetainOldVersionTask() {
         Task testTask = new Task( "Test", "test");
         historyManager.add(testTask);
 
-
         testTask.setName("Changed task");
         testTask.setDescription("Changed description");
         testTask.setStatus(Status.IN_PROGRESS);
 
-
         Task historyTask = historyManager.getHistory().getFirst();
-
 
         assertNotEquals(historyTask.getName(), testTask.getName());
         assertNotEquals(historyTask.getDescription(), testTask.getDescription());
@@ -103,12 +98,9 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task2);
         historyManager.add(task3);
 
-
         historyManager.remove(task2.getId());
 
-
         List<Task> history = historyManager.getHistory();
-
 
         assertEquals(2, history.size(), "History should contain 2 tasks after removal");
         assertEquals(task1, history.get(0), "First task should be task1");
@@ -117,16 +109,12 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void addDuplicateTaskTest() {
-
         historyManager.add(task1);
         historyManager.add(task2);
 
-
         historyManager.add(task1);
 
-
         List<Task> history = historyManager.getHistory();
-
 
         assertEquals(2, history.size(), "History should contain 2 tasks");
         assertEquals(task2, history.get(0), "First task should be task2");
@@ -140,19 +128,13 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task2);
         historyManager.add(task3);
 
-
         historyManager.remove(task1.getId());
-
 
         historyManager.remove(task3.getId());
 
         List<Task> history = historyManager.getHistory();
 
-
         assertEquals(1, history.size(), "History should contain 1 task");
         assertEquals(task2, history.get(0), "Remaining task should be task2");
     }
-
-
-
 }

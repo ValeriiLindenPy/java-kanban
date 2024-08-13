@@ -1,5 +1,8 @@
 package service;
 
+import service.interfaces.HistoryManager;
+import service.interfaces.TaskManager;
+
 public class Managers {
 
     public static TaskManager getDefault() {

@@ -4,6 +4,8 @@ import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
+import service.interfaces.HistoryManager;
+import service.interfaces.TaskManager;
 
 import java.util.*;
 
@@ -215,7 +217,8 @@ public class InMemoryTaskManager implements TaskManager {
 
         if (epicSubTasks.size() == 1 && epicSubTasks.contains(Status.DONE.toString())) {
             epic.setStatus(Status.DONE);
-        } else if (epicSubTasks.isEmpty() || (epicSubTasks.size() == 1 && epicSubTasks.contains(Status.NEW.toString()))) {
+        } else if (epicSubTasks.isEmpty() || (epicSubTasks.size() == 1
+                && epicSubTasks.contains(Status.NEW.toString()))) {
             epic.setStatus(Status.NEW);
         } else {
             epic.setStatus(Status.IN_PROGRESS);

@@ -5,6 +5,7 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.*;
+import service.interfaces.TaskManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;

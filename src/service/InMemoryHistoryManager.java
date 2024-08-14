@@ -11,10 +11,29 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
+    @Override
+    public void add(Task task) {
+        Task taskNew = new Task(task.getId(), task.getName(), task.getDescription(), task.getStatus());
+        removeNode(nodeMap.get(taskNew.getId()));
+        linkLast(taskNew);
+        nodeMap.put(taskNew.getId(), last);
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return getTasks();
+    }
+
+    @Override
+    public void remove(int id) {
+        Node node = nodeMap.remove(id);
+        removeNode(node);
+    }
+
     private static class Node {
         Task task;
-        Node prev, next;
-
+        Node prev;
+        Node next;
 
         public Node(Task task, Node prev, Node next) {
             this.task = task;
@@ -42,18 +61,23 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void linkLast(Task task) {
-        final Node oldLast = last;
-        final Node node = new Node(task, oldLast, null);
-        last = node;
-        if (oldLast == null) {
+        final Node node = new Node(task, last, null);
+        if (last == null) {
             first = node;
         } else {
-            oldLast.next = node;
+            last.next = node;
         }
+        last = node;
     }
 
     private void removeNode(Node node) {
         if (node == null) return;
+
+        if (node == first && node == last) {
+            first = null;
+            last = null;
+            return;
+        }
 
         if (node == first) {
             first = node.next;
@@ -68,35 +92,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             node.next.prev = node.prev;
             node.prev.next = node.next;
-        }
-    }
-
-
-    @Override
-    public void add(Task task) {
-
-        Task taskNew = new Task(task.getId(), task.getName(), task.getDescription(), task.getStatus());
-        if (nodeMap.containsKey(taskNew.getId())) {
-            removeNode(nodeMap.get(taskNew.getId()));
-        }
-
-        linkLast(taskNew);
-        nodeMap.put(taskNew.getId(), last);
-
-    }
-
-
-    @Override
-    public List<Task> getHistory() {
-        return getTasks();
-    }
-
-
-    @Override
-    public void remove(int id) {
-        Node node = nodeMap.remove(id);
-        if (node != null) {
-            removeNode(node);
         }
     }
 }

@@ -33,7 +33,6 @@ class FileBackedTaskManagerTest {
 
     @Test
     void loadFromFile() throws IOException {
-
         manager.createTask(task1);
         manager.createTask(task2);
         int epicId = manager.createEpicTask(epic);
@@ -42,67 +41,15 @@ class FileBackedTaskManagerTest {
 
         FileBackedTaskManager restoredFileManager = FileBackedTaskManager.loadFromFile(file);
 
-        // Updated assertion
         assertEquals(manager.getTasks(), restoredFileManager.getTasks());
     }
 
     @Test
     void shouldSaveAndLoadEmptyFile() throws IOException {
-        // Проверяем, что пустой файл сохраняется и загружается без ошибок
         manager.save();
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
         assertTrue(loadedManager.getTasks().isEmpty());
         assertTrue(loadedManager.getSubTasks().isEmpty());
         assertTrue(loadedManager.getEpics().isEmpty());
-    }
-
-
-
-    @Test
-    void deleteTasks() {
-    }
-
-    @Test
-    void deleteSubTasks() {
-    }
-
-    @Test
-    void deleteEpics() {
-    }
-
-    @Test
-    void createTask() {
-    }
-
-    @Test
-    void createSubTask() {
-    }
-
-    @Test
-    void createEpicTask() {
-    }
-
-    @Test
-    void updateTask() {
-    }
-
-    @Test
-    void updateSubTask() {
-    }
-
-    @Test
-    void updateEpicTask() {
-    }
-
-    @Test
-    void deleteTaskByID() {
-    }
-
-    @Test
-    void deleteSubTaskByID() {
-    }
-
-    @Test
-    void deleteEpicByID() {
     }
 }

@@ -14,13 +14,13 @@ public class CSVFileFormater {
         if (task.getClass() == Subtask.class) {
             type = Type.SUBTASK.toString();
             String epic = Integer.toString(((Subtask) task).getEpicId());
-            return String.join(",", id,type,name,status,description,epic);
+            return String.join(",", id, type, name, status, description, epic);
         } else if (task.getClass() == Epic.class) {
             type = Type.EPIC.toString();
-            return String.join(",", id,type,name,status,description) + ",";
+            return String.join(",", id, type, name, status, description) + ",";
         }
         type = Type.TASK.toString();
-        return String.join(",", id,type,name,status,description) + ",";
+        return String.join(",", id, type, name, status, description) + ",";
     }
 
     public static Task fromString(String value) {
@@ -28,12 +28,12 @@ public class CSVFileFormater {
         Type type = parseType(value);
 
         return switch (type) {
-            case SUBTASK-> new Subtask(Integer.parseInt(taskArray[0]), taskArray[2],
-                    taskArray[4],parseStatus(taskArray[3]), Integer.parseInt(taskArray[5]));
+            case SUBTASK -> new Subtask(Integer.parseInt(taskArray[0]), taskArray[2],
+                    taskArray[4], parseStatus(taskArray[3]), Integer.parseInt(taskArray[5]));
             case EPIC -> new Epic(Integer.parseInt(taskArray[0]), taskArray[2],
-                    taskArray[4],parseStatus(taskArray[3]));
+                    taskArray[4], parseStatus(taskArray[3]));
             case TASK -> new Task(Integer.parseInt(taskArray[0]), taskArray[2],
-                    taskArray[4],parseStatus(taskArray[3]));
+                    taskArray[4], parseStatus(taskArray[3]));
             default -> null;
         };
     }
@@ -58,7 +58,4 @@ public class CSVFileFormater {
             default -> null;
         };
     }
-
-
-
 }

@@ -6,9 +6,7 @@ import service.utils.ManagerSaveException;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -55,8 +53,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
-
-
     public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.taskFile))) {
 
@@ -85,7 +81,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     }
 
-
     @Override
     public void deleteTasks() {
         super.deleteTasks();
@@ -109,7 +104,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         int id = super.createTask(task);
         save();
         return id;
-
     }
 
     @Override
@@ -162,8 +156,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-
-
     public static void main(String[] args) throws IOException {
         File file = new File("src/tasks.csv");
 
@@ -176,5 +168,4 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         FileBackedTaskManager restoredFileManager = FileBackedTaskManager.loadFromFile(file);
         assert restoredFileManager.getTasks().equals(fileManger.getTasks());
     }
-
 }

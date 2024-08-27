@@ -10,11 +10,11 @@ import service.interfaces.TaskManager;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epicTasks;
-    private final HashMap<Integer, Subtask> subTasks;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Epic> epicTasks;
+    protected final HashMap<Integer, Subtask> subTasks;
     private final HistoryManager historyManager;
-    private int taskCounter;
+    protected int taskCounter;
 
     public InMemoryTaskManager() {
         this.taskCounter = 1;
@@ -99,10 +99,11 @@ public class InMemoryTaskManager implements TaskManager {
     public int createSubTask(Subtask task) {
         final int id = taskCounter;
         Epic epic = getEpicByID(task.getEpicId());
+
         if (epic == null) {
-            System.out.println("No such epic");
-            return -1;
+            throw new IllegalArgumentException("Epic with ID " + task.getEpicId() + " does not exist.");
         }
+
         task.setId(id);
         epic.addSubTask(id);
         checkEpicStatus(epic);

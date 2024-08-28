@@ -23,6 +23,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             reader.readLine(); // Skip the header
             List<String> epicLines = new ArrayList<>();
             List<String> subtaskLines = new ArrayList<>();
+            List<String> tasksLines = new ArrayList<>();
 
             while (reader.ready()) {
                 String line = reader.readLine();
@@ -30,24 +31,32 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     continue;
                 }
 
-                Type type = CSVFileFormater.parseType(line);
+                Type type = CSVFileFormater.fromString(line).getType();
 
                 switch (type) {
                     case EPIC -> epicLines.add(line);
                     case SUBTASK -> subtaskLines.add(line);
-                    case TASK -> manager.createTask(CSVFileFormater.fromString(line));
+                    case TASK -> tasksLines.add(line);
                 }
             }
 
             for (String epicLine : epicLines) {
-                manager.createEpicTask((Epic) CSVFileFormater.fromString(epicLine));
+                Epic epic = (Epic) CSVFileFormater.fromString(epicLine);
+                manager.epicTasks.put(epic.getId(), epic);
             }
 
             for (String subtaskLine : subtaskLines) {
-                manager.createSubTask((Subtask) CSVFileFormater.fromString(subtaskLine));
+                Subtask subtask = (Subtask) CSVFileFormater.fromString(subtaskLine);
+                manager.subTasks.put(subtask.getId(), subtask);
             }
+
+            for (String tasksLine : tasksLines) {
+                Task task = CSVFileFormater.fromString(tasksLine);
+                manager.tasks.put(task.getId(), task);
+            }
+
         } catch (IOException e) {
-            System.out.println("FileBacked error!");
+            throw new ManagerSaveException("FileBacked error!", e);
         }
 
         return manager;
@@ -74,7 +83,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(CSVFileFormater.toString(epic));
                 writer.newLine();
             }
-
         } catch (IOException e) {
             throw new ManagerSaveException("Error saving tasks to file: " + e.getMessage(), e);
         }

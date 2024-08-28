@@ -32,16 +32,19 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    void loadFromFile() throws IOException {
-        manager.createTask(task1);
-        manager.createTask(task2);
+    void shouldRestoreAllTaskTypesFromFile() throws IOException {
+        int task1Id = manager.createTask(task1);
+        int task2Id = manager.createTask(task2);
         int epicId = manager.createEpicTask(epic);
         subtask.setEpicId(epicId);
-        manager.createSubTask(subtask);
+        int subtaskId = manager.createSubTask(subtask);
 
-        FileBackedTaskManager restoredFileManager = FileBackedTaskManager.loadFromFile(file);
+        FileBackedTaskManager restoredManager = FileBackedTaskManager.loadFromFile(file);
 
-        assertEquals(manager.getTasks(), restoredFileManager.getTasks());
+        assertEquals(manager.getTaskByID(task1Id), restoredManager.getTaskByID(task1Id));
+        assertEquals(manager.getTaskByID(task2Id), restoredManager.getTaskByID(task2Id));
+        assertEquals(manager.getEpicByID(epicId), restoredManager.getEpicByID(epicId));
+        assertEquals(manager.getSubTaskByID(subtaskId), restoredManager.getSubTaskByID(subtaskId));
     }
 
     @Test
@@ -51,5 +54,18 @@ class FileBackedTaskManagerTest {
         assertTrue(loadedManager.getTasks().isEmpty());
         assertTrue(loadedManager.getSubTasks().isEmpty());
         assertTrue(loadedManager.getEpics().isEmpty());
+    }
+
+    @Test
+    void shouldRestoreAfterTaskDeletion() throws IOException {
+        int task1Id = manager.createTask(task1);
+        int task2Id = manager.createTask(task2);
+
+        manager.deleteTaskByID(task1Id);
+
+        FileBackedTaskManager restoredManager = FileBackedTaskManager.loadFromFile(file);
+
+        assertNull(restoredManager.getTaskByID(task1Id));
+        assertNotNull(restoredManager.getTaskByID(task2Id));
     }
 }

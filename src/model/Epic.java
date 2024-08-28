@@ -18,6 +18,11 @@ public class Epic extends Task {
         this.subtasksIds = new HashSet<>();
     }
 
+    @Override
+    public Type getType() {
+        return Type.EPIC;
+    }
+
     public ArrayList<Integer> getAllSubtasks() {
         return new ArrayList<>(subtasksIds);
     }

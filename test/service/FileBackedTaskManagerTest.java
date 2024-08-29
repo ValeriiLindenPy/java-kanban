@@ -33,18 +33,17 @@ class FileBackedTaskManagerTest {
 
     @Test
     void shouldRestoreAllTaskTypesFromFile() throws IOException {
-        int task1Id = manager.createTask(task1);
-        int task2Id = manager.createTask(task2);
+        manager.createTask(task1);
+        manager.createTask(task2);
         int epicId = manager.createEpicTask(epic);
         subtask.setEpicId(epicId);
-        int subtaskId = manager.createSubTask(subtask);
+        manager.createSubTask(subtask);
 
         FileBackedTaskManager restoredManager = FileBackedTaskManager.loadFromFile(file);
 
-        assertEquals(manager.getTaskByID(task1Id), restoredManager.getTaskByID(task1Id));
-        assertEquals(manager.getTaskByID(task2Id), restoredManager.getTaskByID(task2Id));
-        assertEquals(manager.getEpicByID(epicId), restoredManager.getEpicByID(epicId));
-        assertEquals(manager.getSubTaskByID(subtaskId), restoredManager.getSubTaskByID(subtaskId));
+        assertEquals(manager.getTasks(), restoredManager.getTasks());
+        assertEquals(manager.getEpics(), restoredManager.getEpics());
+        assertEquals(manager.getSubTasks(), restoredManager.getSubTasks());
     }
 
     @Test

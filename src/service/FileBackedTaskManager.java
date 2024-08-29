@@ -21,9 +21,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             reader.readLine(); // Skip the header
-            List<String> epicLines = new ArrayList<>();
-            List<String> subtaskLines = new ArrayList<>();
-            List<String> tasksLines = new ArrayList<>();
+            List<Epic> epics = new ArrayList<>();
+            List<Subtask> subtasks = new ArrayList<>();
+            List<Task> tasks = new ArrayList<>();
 
             while (reader.ready()) {
                 String line = reader.readLine();
@@ -31,27 +31,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     continue;
                 }
 
-                Type type = CSVFileFormater.fromString(line).getType();
+                Task task = CSVFileFormater.fromString(line);
 
-                switch (type) {
-                    case EPIC -> epicLines.add(line);
-                    case SUBTASK -> subtaskLines.add(line);
-                    case TASK -> tasksLines.add(line);
+                switch (task.getType()) {
+                    case EPIC -> epics.add((Epic) task);
+                    case TASK -> tasks.add(task);
+                    case SUBTASK -> subtasks.add((Subtask) task);
                 }
             }
 
-            for (String epicLine : epicLines) {
-                Epic epic = (Epic) CSVFileFormater.fromString(epicLine);
+            for (Epic epic : epics) {
                 manager.epicTasks.put(epic.getId(), epic);
             }
 
-            for (String subtaskLine : subtaskLines) {
-                Subtask subtask = (Subtask) CSVFileFormater.fromString(subtaskLine);
+            for (Subtask subtask : subtasks) {
+                Epic epic = manager.getEpicByID(subtask.getEpicId());
+                epic.addSubTask(subtask.getId());
                 manager.subTasks.put(subtask.getId(), subtask);
             }
 
-            for (String tasksLine : tasksLines) {
-                Task task = CSVFileFormater.fromString(tasksLine);
+            for (Task task : tasks) {
                 manager.tasks.put(task.getId(), task);
             }
 

@@ -23,14 +23,14 @@ public class CSVFileFormater {
 
     public static Task fromString(String value) {
         String[] taskArray = value.split(",");
-        String type = taskArray[1];
+        Type type = Type.valueOf(taskArray[1]);
 
         return switch (type) {
-            case "SUBTASK" -> new Subtask(Integer.parseInt(taskArray[0]), taskArray[2],
+            case SUBTASK -> new Subtask(Integer.parseInt(taskArray[0]), taskArray[2],
                     taskArray[4], parseStatus(taskArray[3]), Integer.parseInt(taskArray[5]));
-            case "EPIC" -> new Epic(Integer.parseInt(taskArray[0]), taskArray[2],
+            case EPIC -> new Epic(Integer.parseInt(taskArray[0]), taskArray[2],
                     taskArray[4], parseStatus(taskArray[3]));
-            case "TASK" -> new Task(Integer.parseInt(taskArray[0]), taskArray[2],
+            case TASK -> new Task(Integer.parseInt(taskArray[0]), taskArray[2],
                     taskArray[4], parseStatus(taskArray[3]));
             default -> null;
         };

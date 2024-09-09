@@ -5,6 +5,7 @@ import model.Subtask;
 import model.Task;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskManager {
 
@@ -20,11 +21,11 @@ public interface TaskManager {
 
     void deleteEpics();
 
-    Task getTaskByID(int id);
+    Optional<Task> getTaskByID(int id);
 
-    Subtask getSubTaskByID(int id);
+    Optional<Subtask> getSubTaskByID(int id);
 
-    Epic getEpicByID(int id);
+    Optional<Epic> getEpicByID(int id);
 
     int createTask(Task task);
 

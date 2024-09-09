@@ -7,6 +7,7 @@ import service.utils.ManagerSaveException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -40,19 +41,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
 
-            for (Epic epic : epics) {
-                manager.epicTasks.put(epic.getId(), epic);
-            }
+            epics.forEach(epic -> manager.epicTasks.put(epic.getId(), epic));
 
-            for (Subtask subtask : subtasks) {
-                Epic epic = manager.getEpicByID(subtask.getEpicId());
-                epic.addSubTask(subtask.getId());
+            subtasks.forEach(subtask -> {
+                Optional<Epic> epic = manager.getEpicByID(subtask.getEpicId());
+                epic.get().addSubTask(subtask.getId());
                 manager.subTasks.put(subtask.getId(), subtask);
-            }
+            });
 
-            for (Task task : tasks) {
-                manager.tasks.put(task.getId(), task);
-            }
+            tasks.forEach(task -> manager.tasks.put(task.getId(), task));
 
         } catch (IOException e) {
             throw new ManagerSaveException("FileBacked error!", e);
@@ -65,7 +62,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.taskFile))) {
 
             if (taskFile.length() == 0) {
-                writer.write("id,type,name,status,description,epic\n");
+                writer.write("id,type,name,status,description,startTime,duration,epic\n");
             }
 
             for (Task task : getTasks()) {

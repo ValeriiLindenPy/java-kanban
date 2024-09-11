@@ -1,6 +1,5 @@
 package service;
 
-
 import model.Task;
 import service.interfaces.HistoryManager;
 

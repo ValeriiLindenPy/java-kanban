@@ -10,8 +10,13 @@ public class Epic extends Task {
     private Set<Integer> subtasksIds;
     private LocalDateTime endTime;
 
+    public Epic(int id, String name, String description, Status status,LocalDateTime startTime, Duration duration) {
+        super(id, name, description, status,startTime, duration);
+        this.subtasksIds = new HashSet<>();
+    }
+
     public Epic(int id, String name, String description, Status status) {
-        super(id, name, description, status);
+        this(id, name, description, status,null, null);
         this.subtasksIds = new HashSet<>();
     }
 
@@ -20,16 +25,6 @@ public class Epic extends Task {
         this.subtasksIds = new HashSet<>();
     }
 
-    public Epic(int id, String name, String description, Status status,LocalDateTime startTime, Duration duration) {
-        super(id, name, description, status,startTime, duration);
-        this.subtasksIds = new HashSet<>();
-    }
-
-
-    public Epic(String name, String description, Duration duration, LocalDateTime startTime) {
-        super(name, description,duration, startTime);
-        this.subtasksIds = new HashSet<>();
-    }
 
     @Override
     public Type getType() {

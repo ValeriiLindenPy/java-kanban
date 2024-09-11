@@ -44,12 +44,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             epics.forEach(epic -> manager.epicTasks.put(epic.getId(), epic));
 
             subtasks.forEach(subtask -> {
-                Optional<Epic> epic = manager.getEpicByID(subtask.getEpicId());
-                epic.get().addSubTask(subtask.getId());
+                Epic epic = manager.epicTasks.get(subtask.getEpicId());
+                epic.addSubTask(subtask.getId());
                 manager.subTasks.put(subtask.getId(), subtask);
+                manager.orderedTasks.add(subtask);
             });
 
-            tasks.forEach(task -> manager.tasks.put(task.getId(), task));
+            tasks.forEach(task -> {
+                manager.tasks.put(task.getId(), task);
+                manager.orderedTasks.add(task);
+            } );
 
         } catch (IOException e) {
             throw new ManagerSaveException("FileBacked error!", e);

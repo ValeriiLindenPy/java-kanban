@@ -12,10 +12,6 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public Subtask(int id, String name, String description, Status status) {
-        super(id, name, description, status);
-    }
-
     public Subtask(String name, String description) {
         super(name, description);
     }
@@ -24,14 +20,14 @@ public class Subtask extends Task {
         super(name, description, duration, startTime);
     }
 
-    @Override
-    public Type getType() {
-        return Type.SUBTASK;
-    }
-
     public Subtask(int id, String name, String description, Status status, int epicId) {
         super(id, name, description, status);
         this.epicId = epicId;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.SUBTASK;
     }
 
     public int getEpicId() {

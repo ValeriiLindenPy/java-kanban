@@ -13,9 +13,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected final HashMap<Integer, Task> tasks;
-    protected final HashMap<Integer, Epic> epicTasks;
-    protected final HashMap<Integer, Subtask> subTasks;
+    protected final Map<Integer, Task> tasks;
+    protected final Map<Integer, Epic> epicTasks;
+    protected final Map<Integer, Subtask> subTasks;
 
     protected final TreeSet<Task> orderedTasks;
 
@@ -49,6 +49,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTasks() {
+        List<Task> tasksToRemove = new ArrayList<>(tasks.values());
+        tasksToRemove.forEach(orderedTasks::remove);
         tasks.clear();
     }
 
@@ -57,6 +59,7 @@ public class InMemoryTaskManager implements TaskManager {
         epicTasks.values().forEach(task -> {
             task.removeAllSubTasks();
             checkEpicStatus(task);
+            orderedTasks.remove(task);
             checkEpicTime(task);
         });
         subTasks.clear();
@@ -168,9 +171,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubTask(Subtask task) {
         if (subTasks.containsKey(task.getId())) {
+            Subtask oldTask = subTasks.get(task.getId());
             subTasks.put(task.getId(), task);
-            if (orderedTasks.contains(task)) {
-                orderedTasks.remove(task);
+            if (orderedTasks.contains(oldTask)) {
+                orderedTasks.remove(oldTask);
                 boolean isValid = getPrioritizedTasks().stream()
                         .allMatch(t -> TasksIntersectionValidator.isValid(t, task));
                 if (isValid) {
@@ -245,8 +249,8 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    public TreeSet<Task> getPrioritizedTasks() {
-        return new TreeSet<>(orderedTasks);
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(orderedTasks);
     }
 
     //Проверка статуса Epic

@@ -52,7 +52,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             tasks.forEach(task -> {
                 manager.tasks.put(task.getId(), task);
                 manager.orderedTasks.add(task);
-            } );
+            });
 
         } catch (IOException e) {
             throw new ManagerSaveException("FileBacked error!", e);

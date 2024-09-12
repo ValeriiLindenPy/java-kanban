@@ -154,9 +154,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (tasks.containsKey(task.getId())) {
+            Task oldTask = tasks.get(task.getId());
             tasks.put(task.getId(), task);
-            if (orderedTasks.contains(task)) {
-                orderedTasks.remove(task);
+            if (orderedTasks.contains(oldTask)) {
+                orderedTasks.remove(oldTask);
                 boolean isValid = getPrioritizedTasks().stream()
                         .allMatch(t -> TasksIntersectionValidator.isValid(t, task));
                 if (isValid) {
@@ -202,6 +203,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskByID(int id) {
         if (tasks.containsKey(id)) {
+            Task oldTask = tasks.get(id);
+            if (orderedTasks.contains(oldTask)) {
+                orderedTasks.remove(oldTask);
+            }
             tasks.remove(id);
         } else {
             System.out.println("No such Task");
@@ -213,6 +218,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTasks.containsKey(id)) {
             Epic epic = getEpicByID(getSubTaskByID(id).get().getEpicId()).get();
             epic.removeSubTaskbyId(id);
+            Subtask oldTask = subTasks.get(id);
+            if (orderedTasks.contains(oldTask)) {
+                orderedTasks.remove(oldTask);
+            }
             subTasks.remove(id);
             checkEpicStatus(epic);
             checkEpicTime(epic);

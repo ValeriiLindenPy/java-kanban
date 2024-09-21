@@ -47,7 +47,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         task2 = new Task("Task 2", "Description 2", duration.plusHours(1), startTime.plusHours(1));
         epic = new Epic("Epic 1", "Epic Description 1");
         subtask1 = new Subtask("Subtask 1", "Subtask Description 1", duration.plusHours(2), startTime.plusHours(2));
-        subtask2 = new Subtask("Subtask 2", "Subtask Description 2", duration.plusHours(3), startTime.plusHours(3));
+        subtask2 = new Subtask("Subtask 2", "Subtask Description 2", duration.plusHours(3), startTime.plusHours(3).plusDays(1));
     }
 
     @Test

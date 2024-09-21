@@ -2,11 +2,9 @@ package api.hendlers;
 
 
 import com.sun.net.httpserver.HttpExchange;
-
 import java.io.IOException;
 
 public class HistoryHandler extends BaseHttpHandler {
-
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -15,9 +13,7 @@ public class HistoryHandler extends BaseHttpHandler {
         switch (method) {
             case "GET" -> handleGetHistory(exchange);
         }
-
     }
-
 
     private void handleGetHistory(HttpExchange exchange) throws IOException {
         try {

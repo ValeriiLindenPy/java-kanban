@@ -1,18 +1,13 @@
 package api;
 
 import api.hendlers.typeTokens.SubtasksListTypeToken;
-import api.hendlers.typeTokens.TasksListTypeToken;
 import model.Epic;
 import model.Subtask;
-import model.Task;
-import model.enums.Status;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import service.Managers;
 import service.utils.customExceptions.IntersectionTaskException;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -21,7 +16,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

@@ -88,7 +88,5 @@ public class EpicByIdHandler extends BaseHttpHandler {
         } else {
             sendCode(exchange, 404);
         }
-
-
     }
 }

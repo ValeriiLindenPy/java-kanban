@@ -29,6 +29,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         removeNode(node);
     }
 
+    @Override
+    public void clearHistory() {
+        nodeMap.clear();
+        first = null;
+        last = null;
+    }
+
     private static class Node {
         Task task;
         Node prev;

@@ -6,11 +6,9 @@ import com.sun.net.httpserver.HttpExchange;
 import model.Task;
 import service.utils.customExceptions.IntersectionTaskException;
 
-
 import java.io.IOException;
 
 public class TaskHandler extends BaseHttpHandler {
-
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -51,7 +49,5 @@ public class TaskHandler extends BaseHttpHandler {
     private void handleGetAllTasks(HttpExchange exchange) throws IOException {
         String jsonResponse = gson.toJson(manager.getTasks());
         sendText(exchange, jsonResponse);
-
     }
-
 }

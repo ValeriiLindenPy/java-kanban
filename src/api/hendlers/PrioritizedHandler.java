@@ -2,13 +2,9 @@ package api.hendlers;
 
 
 import com.sun.net.httpserver.HttpExchange;
-import model.Task;
-import service.utils.customExceptions.IntersectionTaskException;
-
 import java.io.IOException;
 
 public class PrioritizedHandler extends BaseHttpHandler {
-
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -17,9 +13,7 @@ public class PrioritizedHandler extends BaseHttpHandler {
         switch (method) {
             case "GET" -> handleGetPrioritized(exchange);
         }
-
     }
-
 
     private void handleGetPrioritized(HttpExchange exchange) throws IOException {
 
@@ -30,5 +24,4 @@ public class PrioritizedHandler extends BaseHttpHandler {
             sendText(exchange, e.getMessage());
         }
     }
-
 }

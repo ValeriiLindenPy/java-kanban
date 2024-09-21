@@ -51,6 +51,8 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
+    void clearHistory();
+
     List<Task> getPrioritizedTasks();
 
     void resetTaskCounter();

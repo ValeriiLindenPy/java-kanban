@@ -10,7 +10,6 @@ import java.util.HashSet;
 
 public class EpicHandler extends BaseHttpHandler {
 
-
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();

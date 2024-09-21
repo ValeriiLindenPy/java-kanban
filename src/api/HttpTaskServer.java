@@ -1,11 +1,7 @@
 package api;
 
 import api.urls.Routs;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
-import service.Managers;
-import service.interfaces.TaskManager;
 import service.utils.customExceptions.ServerRunException;
 
 import java.io.IOException;
@@ -29,7 +25,6 @@ public class HttpTaskServer {
         System.out.println("Server stopped");
     }
 
-
     public static void main(String[] args) {
         try {
             HttpTaskServer server = new HttpTaskServer();
@@ -38,8 +33,5 @@ public class HttpTaskServer {
         } catch (IOException ioe) {
             throw new ServerRunException("Oops! Server problem!", ioe);
         }
-
     }
-
-
 }

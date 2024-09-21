@@ -13,8 +13,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-
-
 public class ServerSettings {
     //server port settings
     public static final int PORT = 8080;

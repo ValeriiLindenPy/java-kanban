@@ -33,6 +33,10 @@ class ServerTaskTest {
     @AfterEach
     void stopServer() throws IOException {
         ServerSettings.manager.deleteTasks();
+        ServerSettings.manager.deleteTasks();
+        ServerSettings.manager.deleteSubTasks();
+        ServerSettings.manager.deleteEpics();
+        ServerSettings.manager.resetTaskCounter();
         server.stop();
     }
 
@@ -181,9 +185,4 @@ class ServerTaskTest {
 
         assertEquals(0, ServerSettings.manager.getTasks().size());
     }
-
-
-
-
-
 }

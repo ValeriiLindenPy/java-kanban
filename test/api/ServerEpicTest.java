@@ -1,17 +1,14 @@
 package api;
 
 import api.hendlers.typeTokens.EpicListTypeToken;
-import api.hendlers.typeTokens.TasksListTypeToken;
+import api.hendlers.typeTokens.SubtasksListTypeToken;
 import model.Epic;
 import model.Subtask;
-import model.Task;
-import model.enums.Status;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import service.utils.customExceptions.IntersectionTaskException;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,7 +17,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -154,5 +150,33 @@ class ServerEpicTest {
         assertEquals(200, response.statusCode());
 
         assertEquals(0, ServerSettings.manager.getEpics().size());
+    }
+
+    @Test
+    public void testGetEpicSubtasksById() throws IOException, InterruptedException,
+            IntersectionTaskException {
+        // создаём задачу
+        Epic task = new Epic("Epic 1", "Testing epic 1");
+        // конвертируем её в JSON
+        int epicId = ServerSettings.manager.createEpicTask(task);
+        Subtask subtask = new Subtask("Test 2", "Testing Subtask 2",
+                Duration.ofMinutes(5), LocalDateTime.now());
+        subtask.setEpicId(epicId);
+        int subtaskId = ServerSettings.manager.createSubTask(subtask);
+
+        // создаём HTTP-клиент и запрос
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/epics/1/subtasks");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        // вызываем рест, отвечающий за создание задач
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        // проверяем код ответа
+        assertEquals(200, response.statusCode());
+
+        List<Subtask> parsedTask = ServerSettings.gson.fromJson(response.body(),
+                new SubtasksListTypeToken().getType());
+
+        assertEquals(parsedTask.get(0).getId(), subtaskId);
     }
 }

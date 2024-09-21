@@ -31,7 +31,6 @@ public class EpicByIdHandler extends BaseHttpHandler {
         if (uriPattern.length != 3) {
             sendCode(exchange, 404);
         }
-        
         try {
             taskId = Integer.parseInt(uriPattern[2]);
             Optional<Epic> taskOpt = manager.getEpicByID(taskId);

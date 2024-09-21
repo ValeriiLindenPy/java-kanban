@@ -2,6 +2,9 @@ package service;
 
 import service.interfaces.HistoryManager;
 import service.interfaces.TaskManager;
+import service.managersImpl.FileBackedTaskManager;
+import service.managersImpl.InMemoryHistoryManager;
+import service.managersImpl.InMemoryTaskManager;
 
 import java.io.File;
 

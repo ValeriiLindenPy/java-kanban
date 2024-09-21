@@ -1,12 +1,14 @@
-package service;
+package service.managersImpl;
 
 import model.Epic;
-import model.Status;
+import model.enums.Status;
 import model.Subtask;
 import model.Task;
+import service.Managers;
 import service.interfaces.HistoryManager;
 import service.interfaces.TaskManager;
 import service.utils.TasksIntersectionValidator;
+import service.utils.customExceptions.IntersectionTaskException;
 
 import java.time.Duration;
 import java.util.*;
@@ -20,6 +22,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final TreeSet<Task> orderedTasks;
 
     private final HistoryManager historyManager;
+
     protected int taskCounter;
 
     public InMemoryTaskManager() {
@@ -67,6 +70,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpics() {
+        List<Task> tasksToRemove = new ArrayList<>();
+        epicTasks.values().forEach(task -> {
+            tasksToRemove.addAll(getEpicSubTasks(task.getId()));
+        });
+        tasksToRemove.stream().filter(orderedTasks::contains)
+                .forEach(orderedTasks::remove);
         deleteSubTasks();
         epicTasks.clear();
     }
@@ -102,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int createTask(Task task) {
+    public int createTask(Task task) throws IntersectionTaskException {
         final int id = taskCounter;
         taskCounter++;
         task.setId(id);
@@ -112,14 +121,22 @@ public class InMemoryTaskManager implements TaskManager {
                     .allMatch(t -> TasksIntersectionValidator.isValid(t, task));
             if (isValid) {
                 orderedTasks.add(task);
+            } else {
+                tasks.remove(id);
+                throw new IntersectionTaskException("This task has intersection");
             }
         }
         return id;
     }
 
     @Override
-    public int createSubTask(Subtask task) {
+    public int createSubTask(Subtask task) throws IntersectionTaskException, IllegalArgumentException {
         final int id = taskCounter;
+        Optional<Epic> optionalEpic = getEpicByID(task.getEpicId());
+        if (optionalEpic.isEmpty()) {
+            throw new IllegalArgumentException("Epic with ID " + task.getEpicId() + " does not exist.");
+        }
+
         Epic epic = getEpicByID(task.getEpicId()).get();
 
         if (epic == null) {
@@ -127,7 +144,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         task.setId(id);
-        epic.addSubTask(id);
+        try {
+            epic.addSubTask(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         checkEpicStatus(epic);
         subTasks.put(id, task);
         if (task.getStartTime() != null) {
@@ -136,6 +158,9 @@ public class InMemoryTaskManager implements TaskManager {
                     .allMatch(t -> TasksIntersectionValidator.isValid(t, task));
             if (isValid) {
                 orderedTasks.add(task);
+            } else {
+                subTasks.remove(id);
+                throw new IntersectionTaskException("This task has intersection");
             }
         }
         taskCounter++;
@@ -152,7 +177,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(Task task) throws IntersectionTaskException {
         if (tasks.containsKey(task.getId())) {
             Task oldTask = tasks.get(task.getId());
             tasks.put(task.getId(), task);
@@ -162,6 +187,9 @@ public class InMemoryTaskManager implements TaskManager {
                         .allMatch(t -> TasksIntersectionValidator.isValid(t, task));
                 if (isValid) {
                     orderedTasks.add(task);
+                } else {
+                    tasks.remove(task.getId());
+                    throw new IntersectionTaskException("Task intersects!");
                 }
             }
         } else {
@@ -170,7 +198,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateSubTask(Subtask task) {
+    public void updateSubTask(Subtask task) throws IntersectionTaskException {
         if (subTasks.containsKey(task.getId())) {
             Subtask oldTask = subTasks.get(task.getId());
             subTasks.put(task.getId(), task);
@@ -181,6 +209,9 @@ public class InMemoryTaskManager implements TaskManager {
                 if (isValid) {
                     orderedTasks.add(task);
                     checkEpicTime(getEpicByID(task.getEpicId()).get());
+                } else {
+                    subTasks.remove(task.getId());
+                    throw new IntersectionTaskException("Task intersects!");
                 }
             }
             checkEpicStatus(getEpicByID(task.getEpicId()).get());
@@ -234,6 +265,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpicByID(int id) {
         ArrayList<Integer> subtasksID = getEpicByID(id).get().getAllSubtasks();
+
+        subtasksID.stream().map(sub -> subTasks.get(subtasksID))
+                .filter(orderedTasks::contains)
+                .forEach(orderedTasks::remove);
 
         subtasksID.forEach(this::deleteSubTaskByID);
 
@@ -314,5 +349,9 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setEndTime(null);
         }
+    }
+
+    public void resetTaskCounter() {
+        this.taskCounter = 1;
     }
 }

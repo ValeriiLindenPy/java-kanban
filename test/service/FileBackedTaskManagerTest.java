@@ -3,6 +3,8 @@ package service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import service.interfaces.TaskManagerTest;
+import service.managersImpl.FileBackedTaskManager;
+import service.utils.customExceptions.IntersectionTaskException;
 
 
 import java.io.IOException;
@@ -20,7 +22,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
 
     @Test
-    void shouldRestoreAllTaskTypesFromFile() throws IOException {
+    void shouldRestoreAllTaskTypesFromFile() throws IOException, IntersectionTaskException {
         manager.createTask(task1);
         manager.createTask(task2);
         int epicId = manager.createEpicTask(epic);
@@ -44,7 +46,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     }
 
     @Test
-    void shouldRestoreAfterTaskDeletion() throws IOException {
+    void shouldRestoreAfterTaskDeletion() throws IOException, IntersectionTaskException {
         int task1Id = manager.createTask(task1);
         int task2Id = manager.createTask(task2);
 

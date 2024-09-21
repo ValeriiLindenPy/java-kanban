@@ -1,5 +1,8 @@
 package model;
 
+import model.enums.Status;
+import model.enums.Type;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,22 +10,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Epic extends Task {
-    private Set<Integer> subtasksIds;
+    public void setSubtasksIds(Set<Integer> subtasksIds) {
+        this.subtasksIds = subtasksIds;
+    }
+
+    private Set<Integer> subtasksIds = new HashSet<>();;
     private LocalDateTime endTime;
 
-    public Epic(int id, String name, String description, Status status,LocalDateTime startTime, Duration duration) {
-        super(id, name, description, status,startTime, duration);
-        this.subtasksIds = new HashSet<>();
+    public Epic(int id, String name, String description, Status status, LocalDateTime startTime, Duration duration) {
+        super(id, name, description, status, startTime, duration);
     }
 
     public Epic(int id, String name, String description, Status status) {
-        this(id, name, description, status,null, null);
-        this.subtasksIds = new HashSet<>();
+        this(id, name, description, status, null, null);
     }
 
     public Epic(String name, String description) {
         super(name, description);
-        this.subtasksIds = new HashSet<>();
     }
 
 

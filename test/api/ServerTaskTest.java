@@ -7,7 +7,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import service.utils.customExceptions.IntersectionTaskException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ServerTaskTest {
     private HttpTaskServer server;
+    int taskCounter = ServerSettings.manager.getTasks().size();
 
     @BeforeEach
     void setInitState() throws IOException {
@@ -33,10 +33,8 @@ class ServerTaskTest {
     @AfterEach
     void stopServer() throws IOException {
         ServerSettings.manager.deleteTasks();
-        ServerSettings.manager.deleteTasks();
         ServerSettings.manager.deleteSubTasks();
         ServerSettings.manager.deleteEpics();
-        ServerSettings.manager.resetTaskCounter();
         server.stop();
     }
 
@@ -68,29 +66,30 @@ class ServerTaskTest {
 
 
     @Test
-    public void testGetTask() throws IOException, InterruptedException,
-            IntersectionTaskException {
+    public void testGetTask() throws IOException, InterruptedException {
         // создаём задачу
         Task task = new Task("Test 2", "Testing task 2",
                 Status.NEW, LocalDateTime.now(), Duration.ofMinutes(5));
-        // конвертируем её в JSON
+
         ServerSettings.manager.createTask(task);
+
+        // Добавляем задачу в менеджер
+        System.out.println("Created task, current task count: " + ServerSettings.manager.getTasks().size());
 
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/tasks");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
 
-        // вызываем рест, отвечающий за создание задач
+        // вызываем REST, отвечающий за получение задач
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
         // проверяем код ответа
         assertEquals(200, response.statusCode());
 
         // проверяем, что создалась одна задача с корректным именем
-
-        List<Task> parsedTask = ServerSettings.gson.fromJson(response.body(),
-                new TasksListTypeToken().getType());
-
+        List<Task> parsedTask = ServerSettings.gson.fromJson(response.body(), new TasksListTypeToken().getType());
+        System.out.println("Parsed tasks from server: " + parsedTask);
         assertEquals(1, parsedTask.size(), "Некорректное количество задач");
         assertEquals("Test 2", parsedTask.get(0).getName(), "Некорректное имя задачи");
     }
@@ -125,8 +124,7 @@ class ServerTaskTest {
 
 
     @Test
-    public void testGetTaskById() throws IOException, InterruptedException,
-            IntersectionTaskException {
+    public void testGetTaskById() throws IOException, InterruptedException {
         // создаём задачу
         Task task = new Task("Test 2", "Testing task 2",
                 Status.NEW, LocalDateTime.now(), Duration.ofMinutes(5));
@@ -135,7 +133,7 @@ class ServerTaskTest {
 
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks/1");
+        URI url = URI.create("http://localhost:8080/tasks/" + initialId);
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
 
         // вызываем рест, отвечающий за создание задач
@@ -149,13 +147,11 @@ class ServerTaskTest {
     }
 
     @Test
-    public void testGetTaskById404() throws IOException, InterruptedException,
-            IntersectionTaskException {
+    public void testGetTaskById404() throws IOException, InterruptedException {
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/tasks/1");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
-
         // вызываем рест, отвечающий за создание задач
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         // проверяем код ответа
@@ -163,24 +159,18 @@ class ServerTaskTest {
     }
 
     @Test
-    public void testDeleteTaskById() throws IOException, InterruptedException,
-            IntersectionTaskException {
-        // создаём задачу
-        Task task = new Task("Test 2", "Testing task 2",
-                Status.NEW, LocalDateTime.now(), Duration.ofMinutes(5));
-        // конвертируем её в JSON
+    public void testDeleteTaskById() throws IOException, InterruptedException {
+        Task task = new Task("Test 2", "Testing task 2", Status.NEW, LocalDateTime.now(), Duration.ofMinutes(5));
         int initialId = ServerSettings.manager.createTask(task);
 
         assertEquals(1, ServerSettings.manager.getTasks().size());
 
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks/1");
+        // Use the actual ID of the task created
+        URI url = URI.create("http://localhost:8080/tasks/" + initialId);
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+        HttpClient client = HttpClient.newHttpClient();
 
-        // вызываем рест, отвечающий за создание задач
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        // проверяем код ответа
         assertEquals(200, response.statusCode());
 
         assertEquals(0, ServerSettings.manager.getTasks().size());

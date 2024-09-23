@@ -8,7 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import service.utils.customExceptions.IntersectionTaskException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -35,7 +35,6 @@ class ServerEpicTest {
         ServerSettings.manager.deleteTasks();
         ServerSettings.manager.deleteSubTasks();
         ServerSettings.manager.deleteEpics();
-        ServerSettings.manager.resetTaskCounter();
         server.stop();
     }
 
@@ -66,8 +65,7 @@ class ServerEpicTest {
 
 
     @Test
-    public void testGetTask() throws IOException, InterruptedException,
-            IntersectionTaskException {
+    public void testGetTask() throws IOException, InterruptedException {
         // создаём задачу
         Epic task = new Epic("Test 2", "Testing task 2");
         // конвертируем её в JSON
@@ -93,8 +91,7 @@ class ServerEpicTest {
     }
 
     @Test
-    public void testGetTaskById() throws IOException, InterruptedException,
-            IntersectionTaskException {
+    public void testGetTaskById() throws IOException, InterruptedException {
         // создаём задачу
         Epic task = new Epic("Test 2", "Testing task 2");
         // конвертируем её в JSON
@@ -102,7 +99,7 @@ class ServerEpicTest {
 
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/epics/1");
+        URI url = URI.create("http://localhost:8080/epics/" + initialId);
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
 
         // вызываем рест, отвечающий за создание задач
@@ -116,8 +113,7 @@ class ServerEpicTest {
     }
 
     @Test
-    public void testGetTaskById404() throws IOException, InterruptedException,
-            IntersectionTaskException {
+    public void testGetTaskById404() throws IOException, InterruptedException {
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/epics/1");
@@ -130,8 +126,7 @@ class ServerEpicTest {
     }
 
     @Test
-    public void testDeleteTaskById() throws IOException, InterruptedException,
-            IntersectionTaskException {
+    public void testDeleteTaskById() throws IOException, InterruptedException {
         // создаём задачу
         Epic task = new Epic("Test 2", "Testing task 2");
         // конвертируем её в JSON
@@ -141,7 +136,7 @@ class ServerEpicTest {
 
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/epics/1");
+        URI url = URI.create("http://localhost:8080/epics/" + initialId);
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
 
         // вызываем рест, отвечающий за создание задач
@@ -153,8 +148,7 @@ class ServerEpicTest {
     }
 
     @Test
-    public void testGetEpicSubtasksById() throws IOException, InterruptedException,
-            IntersectionTaskException {
+    public void testGetEpicSubtasksById() throws IOException, InterruptedException {
         // создаём задачу
         Epic task = new Epic("Epic 1", "Testing epic 1");
         // конвертируем её в JSON

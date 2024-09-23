@@ -3,7 +3,6 @@ package service.managersImpl;
 import model.*;
 import service.Managers;
 import service.utils.CSVFileFormater;
-import service.utils.customExceptions.IntersectionTaskException;
 import service.utils.customExceptions.ManagerSaveException;
 
 import java.io.*;
@@ -109,14 +108,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public int createTask(Task task) throws IntersectionTaskException {
+    public int createTask(Task task)  {
         int id = super.createTask(task);
         save();
         return id;
     }
 
     @Override
-    public int createSubTask(Subtask task) throws IntersectionTaskException {
+    public int createSubTask(Subtask task) {
         int id = super.createSubTask(task);
         save();
         return id;
@@ -130,13 +129,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateTask(Task task) throws IntersectionTaskException {
+    public void updateTask(Task task) {
         super.updateTask(task);
         save();
     }
 
     @Override
-    public void updateSubTask(Subtask task) throws IntersectionTaskException {
+    public void updateSubTask(Subtask task) {
         super.updateSubTask(task);
         save();
     }
@@ -165,7 +164,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public static void main(String[] args) throws IOException, IntersectionTaskException {
+    public static void main(String[] args) throws IOException {
         File file = new File("src/tasks.csv");
 
         FileBackedTaskManager fileManger = Managers.getFileBasedManager(file);

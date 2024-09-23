@@ -3,7 +3,6 @@ package service.interfaces;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import service.utils.customExceptions.IntersectionTaskException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +28,15 @@ public interface TaskManager {
 
     Optional<Epic> getEpicByID(int id);
 
-    int createTask(Task task) throws IntersectionTaskException;
+    int createTask(Task task);
 
-    int createSubTask(Subtask task) throws IntersectionTaskException;
+    int createSubTask(Subtask task);
 
     int createEpicTask(Epic task);
 
-    void updateTask(Task task) throws IntersectionTaskException;
+    void updateTask(Task task);
 
-    void updateSubTask(Subtask task) throws IntersectionTaskException;
+    void updateSubTask(Subtask task);
 
     void updateEpicTask(Epic task);
 
@@ -55,5 +54,4 @@ public interface TaskManager {
 
     List<Task> getPrioritizedTasks();
 
-    void resetTaskCounter();
 }

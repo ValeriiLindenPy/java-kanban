@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import service.utils.TasksIntersectionValidator;
-import service.utils.customExceptions.IntersectionTaskException;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +50,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getTasks() throws IntersectionTaskException {
+    void getTasks() {
         manager.createTask(task1);
         manager.createTask(task2);
 
@@ -60,7 +59,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getSubTasks() throws IntersectionTaskException {
+    void getSubTasks() {
         int epicID = manager.createEpicTask(epic);
         subtask1.setEpicId(epicID);
         subtask2.setEpicId(epicID);
@@ -77,7 +76,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void deleteTasks() throws IntersectionTaskException {
+    void deleteTasks() {
         manager.createTask(task1);
         manager.createTask(task2);
 
@@ -87,7 +86,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void deleteSubTasks() throws IntersectionTaskException {
+    void deleteSubTasks() {
         int epicId = manager.createEpicTask(epic);
         subtask1.setEpicId(epicId);
         subtask2.setEpicId(epicId);
@@ -109,13 +108,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getTaskByID() throws IntersectionTaskException {
+    void getTaskByID() {
         int taskId = manager.createTask(task1);
         assertEquals(manager.getTaskByID(taskId).get(), task1);
     }
 
     @Test
-    void getSubTaskByID() throws IntersectionTaskException {
+    void getSubTaskByID() {
         int epicId = manager.createEpicTask(epic);
         subtask1.setEpicId(epicId);
         int subtaskId = manager.createSubTask(subtask1);
@@ -129,13 +128,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void createTask() throws IntersectionTaskException {
+    void createTask() {
         manager.createTask(task1);
         assertEquals(manager.getTasks().getFirst(), task1);
     }
 
     @Test
-    void createSubTask() throws IntersectionTaskException {
+    void createSubTask() {
         int epicId = manager.createEpicTask(epic);
         subtask1.setEpicId(epicId);
         manager.createSubTask(subtask1);
@@ -149,7 +148,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void updateTask() throws IntersectionTaskException {
+    void updateTask() {
         int taskId = manager.createTask(simpleTask);
         assertEquals(manager.getTaskByID(taskId).get(), simpleTask);
         Task managerTask = manager.getTaskByID(taskId).get();
@@ -163,7 +162,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void updateSubTask() throws IntersectionTaskException {
+    void updateSubTask() {
         Subtask subtask = new Subtask(simpleTask.getName(), simpleTask.getDescription());
         subtask.setEpicId(manager.createEpicTask(epic));
         int taskId = manager.createSubTask(subtask);
@@ -196,7 +195,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     @DisplayName("All epic subtasks are NEW.")
-    void allEpicSubtasksNEW() throws IntersectionTaskException {
+    void allEpicSubtasksNEW() {
         int epicId = manager.createEpicTask(epic);
 
         subtask1.setEpicId(epicId);
@@ -210,7 +209,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     @DisplayName("All epic subtasks are DONE.")
-    void allEpicSubtasksDONE() throws IntersectionTaskException {
+    void allEpicSubtasksDONE() {
         int epicId = manager.createEpicTask(epic);
 
         subtask1.setEpicId(epicId);
@@ -227,7 +226,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     @DisplayName("All epic subtasks are NEW and DONE.")
-    void allEpicSubtasksNEWandDONE() throws IntersectionTaskException {
+    void allEpicSubtasksNEWandDONE() {
         int epicId = manager.createEpicTask(epic);
 
         subtask1.setEpicId(epicId);
@@ -244,7 +243,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     @DisplayName("All epic subtasks are IN_PROGRESS")
-    void allEpicSubtasksINPROGRESS() throws IntersectionTaskException {
+    void allEpicSubtasksINPROGRESS() {
         int epicId = manager.createEpicTask(epic);
 
         subtask1.setEpicId(epicId);

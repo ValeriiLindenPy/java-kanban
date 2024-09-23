@@ -8,7 +8,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import service.utils.customExceptions.IntersectionTaskException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -49,12 +48,11 @@ class HttpTaskServerTest {
         ServerSettings.manager.deleteTasks();
         ServerSettings.manager.deleteSubTasks();
         ServerSettings.manager.deleteEpics();
-        ServerSettings.manager.resetTaskCounter();
         server.stop();
     }
 
     @Test
-    void getHistory () throws IntersectionTaskException, IOException, InterruptedException {
+    void getHistory () throws IOException, InterruptedException {
         ServerSettings.manager.clearHistory();
         assertTrue(ServerSettings.manager.getHistory().isEmpty(), "История не пуста перед тестом");
 
@@ -82,7 +80,7 @@ class HttpTaskServerTest {
     }
 
     @Test
-    void getPrioritizedTasks () throws IntersectionTaskException, IOException, InterruptedException {
+    void getPrioritizedTasks () throws IOException, InterruptedException {
         // конвертируем её в JSON
         ServerSettings.manager.createTask(task1);
         ServerSettings.manager.createTask(task2);

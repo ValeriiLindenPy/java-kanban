@@ -111,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int createTask(Task task) throws IntersectionTaskException {
+    public int createTask(Task task) {
         final int id = taskCounter;
         taskCounter++;
         task.setId(id);
@@ -130,7 +130,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int createSubTask(Subtask task) throws IntersectionTaskException, IllegalArgumentException {
+    public int createSubTask(Subtask task) throws IllegalArgumentException {
         final int id = taskCounter;
         Optional<Epic> optionalEpic = getEpicByID(task.getEpicId());
         if (optionalEpic.isEmpty()) {
@@ -177,7 +177,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) throws IntersectionTaskException {
+    public void updateTask(Task task) {
         if (tasks.containsKey(task.getId())) {
             Task oldTask = tasks.get(task.getId());
             tasks.put(task.getId(), task);
@@ -198,7 +198,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateSubTask(Subtask task) throws IntersectionTaskException {
+    public void updateSubTask(Subtask task) {
         if (subTasks.containsKey(task.getId())) {
             Subtask oldTask = subTasks.get(task.getId());
             subTasks.put(task.getId(), task);
@@ -356,7 +356,4 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void resetTaskCounter() {
-        this.taskCounter = 1;
-    }
 }

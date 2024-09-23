@@ -10,10 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Epic extends Task {
-    public void setSubtasksIds(Set<Integer> subtasksIds) {
-        this.subtasksIds = subtasksIds;
-    }
-
     private Set<Integer> subtasksIds = new HashSet<>();
     private LocalDateTime endTime;
 

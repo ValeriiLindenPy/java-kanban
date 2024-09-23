@@ -4,9 +4,7 @@ import api.hendlers.BaseHttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 import model.Epic;
 import model.Subtask;
-
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,7 +90,6 @@ public class EpicHandler extends BaseHttpHandler {
         String stringTask = new String(bytes);
 
         Epic epic = gson.fromJson(stringTask, Epic.class);
-        epic.setSubtasksIds(new HashSet<>());
 
         if (epic.getId() == 0) {
             manager.createEpicTask(epic);

@@ -1,11 +1,10 @@
 package service.interfaces;
 
-import model.Status;
+import model.enums.Status;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import service.Managers;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

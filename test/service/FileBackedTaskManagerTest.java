@@ -3,7 +3,7 @@ package service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import service.interfaces.TaskManagerTest;
-
+import service.managersImpl.FileBackedTaskManager;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -18,14 +18,13 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         return Managers.getFileBasedManager(file);
     }
 
-
     @Test
     void shouldRestoreAllTaskTypesFromFile() throws IOException {
         manager.createTask(task1);
         manager.createTask(task2);
         int epicId = manager.createEpicTask(epic);
-        subtask1.setEpicId(epicId);
-        manager.createSubTask(subtask1);
+        subtask2.setEpicId(epicId);
+        manager.createSubTask(subtask2);
 
         FileBackedTaskManager restoredManager = FileBackedTaskManager.loadFromFile(file);
 
@@ -44,7 +43,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     }
 
     @Test
-    void shouldRestoreAfterTaskDeletion() throws IOException {
+    void shouldRestoreAfterTaskDeletion() throws IOException{
         int task1Id = manager.createTask(task1);
         int task2Id = manager.createTask(task2);
 

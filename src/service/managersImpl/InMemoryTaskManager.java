@@ -1,12 +1,14 @@
-package service;
+package service.managersImpl;
 
 import model.Epic;
-import model.Status;
+import model.enums.Status;
 import model.Subtask;
 import model.Task;
+import service.Managers;
 import service.interfaces.HistoryManager;
 import service.interfaces.TaskManager;
 import service.utils.TasksIntersectionValidator;
+import service.utils.customExceptions.IntersectionTaskException;
 
 import java.time.Duration;
 import java.util.*;
@@ -20,6 +22,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final TreeSet<Task> orderedTasks;
 
     private final HistoryManager historyManager;
+
     protected int taskCounter;
 
     public InMemoryTaskManager() {
@@ -67,6 +70,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpics() {
+        List<Task> tasksToRemove = new ArrayList<>();
+        epicTasks.values().forEach(task -> {
+            tasksToRemove.addAll(getEpicSubTasks(task.getId()));
+        });
+        tasksToRemove.stream().filter(orderedTasks::contains)
+                .forEach(orderedTasks::remove);
         deleteSubTasks();
         epicTasks.clear();
     }
@@ -112,14 +121,22 @@ public class InMemoryTaskManager implements TaskManager {
                     .allMatch(t -> TasksIntersectionValidator.isValid(t, task));
             if (isValid) {
                 orderedTasks.add(task);
+            } else {
+                tasks.remove(id);
+                throw new IntersectionTaskException("This task has intersection");
             }
         }
         return id;
     }
 
     @Override
-    public int createSubTask(Subtask task) {
+    public int createSubTask(Subtask task) throws IllegalArgumentException {
         final int id = taskCounter;
+        Optional<Epic> optionalEpic = getEpicByID(task.getEpicId());
+        if (optionalEpic.isEmpty()) {
+            throw new IllegalArgumentException("Epic with ID " + task.getEpicId() + " does not exist.");
+        }
+
         Epic epic = getEpicByID(task.getEpicId()).get();
 
         if (epic == null) {
@@ -127,7 +144,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         task.setId(id);
-        epic.addSubTask(id);
+        try {
+            epic.addSubTask(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         checkEpicStatus(epic);
         subTasks.put(id, task);
         if (task.getStartTime() != null) {
@@ -136,6 +158,9 @@ public class InMemoryTaskManager implements TaskManager {
                     .allMatch(t -> TasksIntersectionValidator.isValid(t, task));
             if (isValid) {
                 orderedTasks.add(task);
+            } else {
+                subTasks.remove(id);
+                throw new IntersectionTaskException("This task has intersection");
             }
         }
         taskCounter++;
@@ -162,6 +187,9 @@ public class InMemoryTaskManager implements TaskManager {
                         .allMatch(t -> TasksIntersectionValidator.isValid(t, task));
                 if (isValid) {
                     orderedTasks.add(task);
+                } else {
+                    tasks.remove(task.getId());
+                    throw new IntersectionTaskException("Task intersects!");
                 }
             }
         } else {
@@ -181,6 +209,9 @@ public class InMemoryTaskManager implements TaskManager {
                 if (isValid) {
                     orderedTasks.add(task);
                     checkEpicTime(getEpicByID(task.getEpicId()).get());
+                } else {
+                    subTasks.remove(task.getId());
+                    throw new IntersectionTaskException("Task intersects!");
                 }
             }
             checkEpicStatus(getEpicByID(task.getEpicId()).get());
@@ -235,6 +266,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpicByID(int id) {
         ArrayList<Integer> subtasksID = getEpicByID(id).get().getAllSubtasks();
 
+        subtasksID.stream().map(sub -> subTasks.get(subtasksID))
+                .filter(orderedTasks::contains)
+                .forEach(orderedTasks::remove);
+
         subtasksID.forEach(this::deleteSubTaskByID);
 
         if (epicTasks.containsKey(id)) {
@@ -256,6 +291,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    @Override
+    public void clearHistory() {
+        historyManager.clearHistory();
     }
 
     public List<Task> getPrioritizedTasks() {
@@ -315,4 +355,5 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setEndTime(null);
         }
     }
+
 }
